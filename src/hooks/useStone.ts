@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from 'react'
 
 type Cell = null | 'white' | 'black'
 type Row = Cell[]
@@ -36,8 +36,36 @@ export function useStone() {
       .reduce((prev, current) => prev.concat(current), [])
 
   useEffect(() => {
-    if (restOfStones === 0) {
+    if (restOfStones === 0 || whiteStones === 0 || blackStones === 0 ) {
       setCurrent(null)
+    }
+  }, [restOfStones])
+
+  const getXYByType = (type: Cell) =>
+    stones
+      .map((row: Row, y: number) =>
+        row
+          .map((cell, x) => ({ x, y, type: cell }))
+          .filter(obj => obj.type === type)
+      )
+      .reduce((prev, current) => prev.concat(current), [])
+
+  const selectableCells = useMemo(() => getXYByType(null), [current])
+
+  useEffect(() => {
+    let selectable = false
+
+    if (!selectableCells) return
+
+    for (let i = selectableCells.length - 1; i >= 0; i--) {
+      if (checkSelectable(selectableCells[i].x, selectableCells[i].y)) {
+        selectable = true
+        return
+      }
+    }
+
+    if (!selectable && restOfStones !== 0) {
+      handleSkip()
     }
   }, [restOfStones])
 
