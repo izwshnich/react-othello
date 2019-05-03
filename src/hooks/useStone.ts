@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react"
 
-type Stones = null[][] | 'white'[][] | 'black'[][]
-type Row = null[] | 'white'[] | 'black'[]
+type Cell = null | 'white' | 'black'
+type Row = Cell[]
+type Stones = Row[]
 
 export function useStone() {
-  const [current, setCurrent] = useState<null | 'white' | 'black'>('white')
+  const [current, setCurrent] = useState<Cell>('white')
   const [stones, setStones] = useState<Stones>([...Array(8)].map(_ => [...Array(8)].map(_ => null)))
   const [whiteStones, setWhiteStones] = useState(2)
   const [blackStones, setBlackStones] = useState(2)
+  const [restOfStones, setRestOfStones] = useState(64)
 
   useEffect(() => initialize(), [])
 
@@ -23,28 +25,21 @@ export function useStone() {
   }
 
   useEffect(() => {
-    let white = 0
-    let black = 0
-
-    stones.forEach((row: Row) => row.forEach((cell: null | 'white' | 'black') => {
-      if (cell) {
-        if (cell === 'white') {
-          white += 1
-        } else {
-          black += 1
-        }
-      }
-    }))
-
-    setWhiteStones(white)
-    setBlackStones(black)
+    setWhiteStones(getCurrentCellsByType('white').length)
+    setBlackStones(getCurrentCellsByType('black').length)
+    setRestOfStones(getCurrentCellsByType(null).length)
   }, [current])
 
+  const getCurrentCellsByType = (type: Cell) =>
+    stones
+      .map((row: Row) => row.filter(cell => cell === type))
+      .reduce((prev, current) => prev.concat(current), [])
+
   useEffect(() => {
-    if (whiteStones + blackStones === 64) {
+    if (restOfStones === 0) {
       setCurrent(null)
     }
-  }, [whiteStones, blackStones])
+  }, [restOfStones])
 
   const handleSkip = () => {
     setCurrent(current === 'white' ? 'black' : 'white')
