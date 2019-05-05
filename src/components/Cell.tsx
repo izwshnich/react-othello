@@ -6,7 +6,7 @@ interface IProps {
   y: number,
   stone: null | 'white' | 'black',
   checkSelectable: (x: number, y: number) => boolean | undefined,
-  handleClick: (e: React.MouseEvent) => void,
+  putStones: (e: React.MouseEvent) => void,
   current: null | 'white' | 'black'
 }
 
@@ -32,10 +32,15 @@ const getStoneStyle = (stone: string) => ({
   borderRadius: '50%',
 })
 
-const Cell: React.FC<IProps> = ({ x, y, stone, checkSelectable, handleClick, current }) => {
+const Cell: React.FC<IProps> = ({ x, y, stone, checkSelectable, putStones, current }) => {
   const [showSelectable, setShowSelectable] = useState(false)
   const handleMouseEnter = () => setShowSelectable(true)
   const handleMouseLeave = () => setShowSelectable(false)
+  const handleClick = (e: React.MouseEvent) => {
+    if (stone) return
+    putStones(e)
+  }
+
   const selectable = useCallback(
     (x, y) => {
       return checkSelectable(x, y)

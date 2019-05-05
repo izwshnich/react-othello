@@ -17,6 +17,7 @@ const scoreStyle = {
   display: 'flex',
   justifyContent: 'space-between',
   fontWeight: 'bold' as React.CSSProperties['fontWeight'],
+  maxWidth: '640px',
 }
 
 const getPlayerStyle = (color: 'white' | 'black', current: null | 'white' | 'black') => ({
@@ -26,7 +27,7 @@ const getPlayerStyle = (color: 'white' | 'black', current: null | 'white' | 'bla
 })
 
 const Board = () => {
-  const { current, stones, checkSelectable, handleClick, handleSkip, whiteStones, blackStones } = useStone()
+  const { current, stones, checkSelectable, putStones, whiteStones, blackStones } = useStone()
 
   return (
     <>
@@ -46,14 +47,12 @@ const Board = () => {
                 y={y}
                 stone={stones[y][x]}
                 checkSelectable={checkSelectable}
-                handleClick={handleClick} 
+                putStones={putStones} 
                 current={current} />
             ))}
           </div>
         ))}
       </div>
-
-      <button onClick={handleSkip}>SKIP</button>
     </>
   )
 }

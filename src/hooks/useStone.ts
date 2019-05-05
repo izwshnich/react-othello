@@ -65,13 +65,9 @@ export function useStone() {
     }
 
     if (!selectable && restOfStones !== 0) {
-      handleSkip()
+      setCurrent(current === 'white' ? 'black' : 'white')
     }
   }, [restOfStones])
-
-  const handleSkip = () => {
-    setCurrent(current === 'white' ? 'black' : 'white')
-  }
 
   const putStonesToTop = (x: number, y: number) => {
     const dest = checkTopStones(x, y)
@@ -396,7 +392,7 @@ export function useStone() {
     }
   }
 
-  const handleClick = (e: React.MouseEvent) => {
+  const putStones = (e: React.MouseEvent) => {
     const data = (e.target as HTMLElement).dataset
 
     if (data.x && data.y) {
@@ -430,8 +426,7 @@ export function useStone() {
     current,
     stones,
     checkSelectable,
-    handleClick,
-    handleSkip,
+    putStones,
     whiteStones,
     blackStones,
   }
